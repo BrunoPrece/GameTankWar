@@ -18,7 +18,7 @@ public class Servidor {
     // variavel para contar a quantidade de conexões permitidas
     public static int contador = 0;
     // objetos da classe Player
-    private ArrayList<NetPlayer> netPlayers = new ArrayList<NetPlayer>(); 
+    private ArrayList<Player> netPlayers = new ArrayList<Player>(); 
     
     /**
      * Construtor Padrão da Classe.
@@ -46,7 +46,7 @@ public class Servidor {
                     
                     /* Cria um objeto Player para o cliente que acabou de conectar, ele recebe
                         o número da conexão e o socket */
-                    NetPlayer aux = new NetPlayer(contador, socket); 
+                    Player aux = new Player(contador, socket); 
                     
                     System.out.println(" *** Jogador " + contador + " acaba de conectar-se *** ");
                     
@@ -78,8 +78,8 @@ public class Servidor {
      */
     private void enviarMensagem(String msg){
         try {
-            for(NetPlayer player : netPlayers){
-                player.out.writeUTF(msg);
+            for(Player player : netPlayers){
+                player.saida.writeUTF(msg);
             }
         } catch (IOException e) {
         }
@@ -92,13 +92,13 @@ public class Servidor {
      */
     private class ThreadCliente implements Runnable {
 
-        NetPlayer jogador;
+        Player jogador;
 
         /**
          * Construtor Padrão.
          * @param jogador 
          */
-        public ThreadCliente(NetPlayer jogador) {
+        public ThreadCliente(Player jogador) {
             this.jogador = jogador;
         }
 
@@ -119,9 +119,9 @@ public class Servidor {
                     /* Se o jogador desta thread for 0 */
                     if(jogador.id == 0){ 
                         /* Envia a mensagem para o adversário, que no caso é o 1 do parâmetro */
-                        netPlayers.get(1).out.writeUTF(mensagem); 
+                        netPlayers.get(1).saida.writeUTF(mensagem); 
                     } else { /* Senão, vice-versa */
-                        netPlayers.get(0).out.writeUTF(mensagem); 
+                        netPlayers.get(0).saida.writeUTF(mensagem); 
                     }
                     
                 }
